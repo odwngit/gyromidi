@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Starwheel</title>
+		<style>
+			* {
+				font-family: sans-serif;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>starwheel</h1>
+		<hr>
+		<span>Enter polling rate:</span>
+		<input type="number" id="polling_rate" min="5" max="1000"></input>
+		<hr>
+		<button onclick="startPolling()">Start Polling</button>
+		<button onclick="stopPolling()">Stop Polling</button>
+
+		<script>
+			var curAngleAlpha = 0;
+			var curAngleBeta = 0;
+			var curAngleGamma = 0;
+
+			var polling = false;
+
+			function startPolling() {
+				if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEvent.requestPermission) === "function") {
+        				DeviceOrientationEvent.requestPermission()
+            				.then(response => {
+            					if (response == "granted") {
+							polling = true;
+                					window.addEventListener("deviceorientation", (event) => {
+								curAngleAlpha = event.alpha;
+								curAngleBeta = event.beta;
+								curAngleGamma = event.gamma;
+                					})
+            					}
+        				}).catch( console.error )
+    				} else {
+        				alert("DeviceOrientationEvent is not defined");
+    				}
+			}
+
+			function stopPolling() {
+				polling = false;
+			}
+			
+			var polling_rate_hz = 1000;
+
+			document.getElementById("polling_rate").addEventListener("change", (event) => {
+				polling_rate_hz = parseFloat(event.target.value);
+			});
+
+			setInterval(f => {
+				if (polling) {
+					sendRequest(curAngleAlpha, curAngleBeta, curAngleGamma);
+				}
+			}, polling_rate_hz)
+
+			function sendRequest(x, y, z) {
+				fetch(window.location.href, {
+  					method: "POST",
+  					body: JSON.stringify(
+						{
+							"AngleX": x,
+							"AngleY": y,
+							"AngleZ": z
+						}
+					),
+  					headers: {
+						"Content-type": "application/json; charset=UTF-8"
+  					}
+				});
+			}
+		</script>
+	</body>
+</html>
