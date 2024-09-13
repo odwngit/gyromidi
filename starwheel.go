@@ -5,6 +5,7 @@ import (
 	"log"
 	"encoding/json"
 	"net/http"
+	//"github.com/go-vgo/robotgo"
 )
 
 type GyroscopeData struct {
@@ -24,7 +25,7 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
-			fmt.Println(gyro)
+			fmt.Println(gyro.AngleY)
 		} else {
 			http.ServeFile(writer, request, "controller/index.html") // Serve up file
 		}

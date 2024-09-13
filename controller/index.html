@@ -16,6 +16,8 @@
 		<hr>
 		<button onclick="startPolling()">Start Polling</button>
 		<button onclick="stopPolling()">Stop Polling</button>
+		<hr>
+		<h1 style="writing-mode: vertical-rl;">THIS WAY UP</h1>
 
 		<script>
 			var curAngleAlpha = 0;
@@ -23,23 +25,26 @@
 			var curAngleGamma = 0;
 
 			var polling = false;
+			var requestedGyro = false;
 
-			function startPolling() {
-				if (typeof(DeviceOrientationEvent) !== "undefined" && typeof(DeviceOrientationEvent.requestPermission) === "function") {
-        				DeviceOrientationEvent.requestPermission()
-            				.then(response => {
-            					if (response == "granted") {
-							polling = true;
-                					window.addEventListener("deviceorientation", (event) => {
-								curAngleAlpha = event.alpha;
-								curAngleBeta = event.beta;
-								curAngleGamma = event.gamma;
-                					})
-            					}
-        				}).catch( console.error )
-    				} else {
-        				alert("DeviceOrientationEvent is not defined");
-    				}
+			async function startPolling() {
+				if (!requestedGyro) {
+					requestedGyro = true;
+					if (typeof DeviceMotionEvent.requestPermission === 'function') {
+        					await DeviceMotionEvent.requestPermission()
+        					.catch((err) => {
+							alert(`Error getting sensor permission: ${err}`);
+            						return;
+        					})
+    					}
+                			window.addEventListener("deviceorientation", (event) => {
+						curAngleAlpha = event.alpha;
+						curAngleBeta = event.beta;
+						curAngleGamma = event.gamma;
+                			})
+				}
+				polling = true;
+				doPoll();
 			}
 
 			function stopPolling() {
@@ -52,12 +57,13 @@
 				polling_rate_hz = parseFloat(event.target.value);
 			});
 
-			setInterval(f => {
+			function doPoll() {
+				sendRequest(curAngleAlpha, curAngleBeta, curAngleGamma);
 				if (polling) {
-					sendRequest(curAngleAlpha, curAngleBeta, curAngleGamma);
+					setTimeout(doPoll, polling_rate_hz)
 				}
-			}, polling_rate_hz)
-
+			}
+			
 			function sendRequest(x, y, z) {
 				fetch(window.location.href, {
   					method: "POST",
