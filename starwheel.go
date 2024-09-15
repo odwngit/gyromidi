@@ -1,11 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"encoding/json"
 	"net/http"
-	//"github.com/go-vgo/robotgo"
+	"github.com/go-vgo/robotgo"
 )
 
 type GyroscopeData struct {
@@ -15,8 +14,10 @@ type GyroscopeData struct {
 }
 
 func main() {
-	fmt.Println("Starting http server...")
+	log.Println("Starting http server...")
 	var gyro GyroscopeData
+
+	sx, sy := robotgo.GetScreenSize()
 
 	siteHandler := func(writer http.ResponseWriter, request *http.Request) { // Site handler
 		if request.Method == "POST" { // If receiving a POST request
@@ -25,7 +26,10 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
-			fmt.Println(gyro.AngleY)
+
+			var mousex int = (sx/2)+(int(gyro.AngleY)*6)
+			robotgo.Move(mousex, sy/2)
+
 		} else {
 			http.ServeFile(writer, request, "controller/index.html") // Serve up file
 		}
@@ -33,6 +37,6 @@ func main() {
 
 	http.HandleFunc("/starwheel", siteHandler)
 	
-	fmt.Printf("Hosting on %v:8080/starwheel\n", GetOutboundIP())
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Printf("Hosting on %v:8080/starwheel\n", GetOutboundIP())
+	log.Fatal(http.ListenAndServeTLS(":8080", "ssl/localhost.crt", "ssl/localhost.key", nil))
 }

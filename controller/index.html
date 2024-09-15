@@ -11,8 +11,8 @@
 	<body>
 		<h1>starwheel</h1>
 		<hr>
-		<span>Enter polling rate:</span>
-		<input type="number" id="polling_rate" min="5" max="1000"></input>
+		<span>Enter polling rate (hz):</span>
+		<input type="number" id="polling_rate"></input>
 		<hr>
 		<button onclick="startPolling()">Start Polling</button>
 		<button onclick="stopPolling()">Stop Polling</button>
@@ -51,7 +51,7 @@
 				polling = false;
 			}
 			
-			var polling_rate_hz = 1000;
+			var polling_rate_hz = 1;
 
 			document.getElementById("polling_rate").addEventListener("change", (event) => {
 				polling_rate_hz = parseFloat(event.target.value);
@@ -60,7 +60,7 @@
 			function doPoll() {
 				sendRequest(curAngleAlpha, curAngleBeta, curAngleGamma);
 				if (polling) {
-					setTimeout(doPoll, polling_rate_hz)
+					setTimeout(doPoll, (1/polling_rate_hz)*1000)
 				}
 			}
 			
