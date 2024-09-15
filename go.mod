@@ -2,7 +2,10 @@ module odwn/starwheel
 
 go 1.22.5
 
-require github.com/go-vgo/robotgo v0.110.2
+require (
+	github.com/BurntSushi/toml v1.4.0
+	github.com/go-vgo/robotgo v0.110.2
+)
 
 require (
 	github.com/dblohm7/wingoes v0.0.0-20231019175336-f6e33aa7cc34 // indirect
