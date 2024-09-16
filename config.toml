@@ -2,18 +2,21 @@
 
 # Mode determines how inputs are mapped:
 # mouse|threshold
-Mode = "mouse"
+Mode = "Threshold"
 
 # Axis determines which gyroscopic axis the input is mapped to:
 # X|Y|Z
-Axis = "Y"
+Axis = "Z"
 
 # Sensitivity defines the multiplication of the gyroscope data for pixel mouse movement:
 Sensitivity = 8.0
 
+# Angle offset for calibration
+AngleOffset = 3.14
+
 # Threshold left and right define the angle thresholds for the corresponding threshold keys to press:
-ThresholdLeft = -25
+ThresholdLeft = -30
 ThresholdRight = 25
 
 ThresholdLeftKey = "a"
-ThresholdRightKey = "d"
+ThresholdRightKey = "t"
