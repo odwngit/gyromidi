@@ -53,13 +53,15 @@ func main() {
 			}
 			
 			// Get selected axis
+			var selected_axis float64
+
 			switch cfg.Axis {
 				case "X":
-					selected_axis := gyro.AngleX
+					selected_axis = gyro.AngleX
 				case "Y":
-					selected_axis := gyro.AngleY
+					selected_axis = gyro.AngleY
 				case "Z":
-					selected_axis := gyro.AngleZ
+					selected_axis = gyro.AngleZ
 				default:
 					log.Fatal("Error: unsupported config value: Axis")
 			}
@@ -93,5 +95,5 @@ func main() {
 	http.HandleFunc("/starwheel", site_handler) // Route /starwheel into site_handler
 	log.Printf("Hosting on https://%v:8080/starwheel\n", GetOutboundIP())
 
-	log.Fatal(http.ListenAndServeTLS(":8080", "ssl/localhost.crt", "ssl/localhost.key", nil)) // Start server with ssl
+	log.Fatal(http.ListenAndServeTLS(":8080", "ssl/starwheel.crt", "ssl/starwheel.key", nil)) // Start server with ssl
 }
