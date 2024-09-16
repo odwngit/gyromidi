@@ -28,11 +28,9 @@ type Config struct {
 }
 
 func main() {
-	log.Println("Starting http server...")
+	log.Println("Starting starwheel...")
 
-	var gyro GyroscopeData
-
-	var cfg Config
+	var cfg Config // Load config.toml
 	_, err := toml.DecodeFile("config.toml", &cfg)
 	if err != nil {
 		log.Fatal(err)
@@ -40,9 +38,9 @@ func main() {
 	log.Printf("Config loaded from config.toml: Mode = '%v'\n", cfg.Mode)
 
 	sx, sy := robotgo.GetScreenSize()
-
 	var left_pressed bool = false
 	var right_pressed bool = false
+	var gyro GyroscopeData
 
 	site_handler := func(writer http.ResponseWriter, request *http.Request) { // Site handler
 		if request.Method == "POST" { // If receiving a POST request
@@ -88,7 +86,7 @@ func main() {
 			}
 
 		} else {
-			http.ServeFile(writer, request, "controller/index.html") // Serve up file
+			http.ServeFile(writer, request, "site/controller.html") // Serve up file
 		}
 	}
 
