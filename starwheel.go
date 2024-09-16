@@ -16,6 +16,7 @@ type GyroscopeData struct {
 
 type Config struct {
 	Mode string
+	Axis string
 	
 	Sensitivity float64
 
@@ -36,7 +37,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println("Config loaded from config.toml")
+	log.Printf("Config loaded from config.toml: Mode = '%v'\n", cfg.Mode)
 
 	sx, sy := robotgo.GetScreenSize()
 
@@ -50,26 +51,38 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
+			
+			// Get selected axis
+			switch cfg.Axis {
+				case "X":
+					selected_axis := gyro.AngleX
+				case "Y":
+					selected_axis := gyro.AngleY
+				case "Z":
+					selected_axis := gyro.AngleZ
+				default:
+					log.Fatal("Error: unsupported config value: Axis")
+			}
 
 			// Handle gyro data
 			switch cfg.Mode {
 				case "mouse":
-					robotgo.Move((sx/2)+(int(gyro.AngleY*cfg.Sensitivity)), sy/2)
+					robotgo.Move((sx/2)+(int(selected_axis*cfg.Sensitivity)), sy/2)
 				case "threshold":
-					if gyro.AngleY < cfg.ThresholdLeft && !left_pressed {
+					if selected_axis < cfg.ThresholdLeft && !left_pressed {
 						left_pressed = true
 						robotgo.KeyToggle(cfg.ThresholdLeftKey)
-					} else if gyro.AngleY > cfg.ThresholdRight && !right_pressed {
+					} else if selected_axis > cfg.ThresholdRight && !right_pressed {
 						right_pressed = true
 						robotgo.KeyToggle(cfg.ThresholdRightKey)
-					} else if (left_pressed || right_pressed) && gyro.AngleY > cfg.ThresholdLeft && gyro.AngleY < cfg.ThresholdRight {
+					} else if (left_pressed || right_pressed) && selected_axis > cfg.ThresholdLeft && selected_axis < cfg.ThresholdRight {
 						left_pressed = false
 						right_pressed = false
 						robotgo.KeyToggle(cfg.ThresholdLeftKey, "up")
 						robotgo.KeyToggle(cfg.ThresholdRightKey, "up")
 					}
 				default:
-					log.Fatal("Error: unsupported config Mode")
+					log.Fatal("Error: unsupported config value: Mode")
 			}
 
 		} else {
@@ -78,7 +91,7 @@ func main() {
 	}
 
 	http.HandleFunc("/starwheel", site_handler) // Route /starwheel into site_handler
-	log.Printf("Hosting on %v:8080/starwheel\n", GetOutboundIP())
+	log.Printf("Hosting on https://%v:8080/starwheel\n", GetOutboundIP())
 
 	log.Fatal(http.ListenAndServeTLS(":8080", "ssl/localhost.crt", "ssl/localhost.key", nil)) // Start server with ssl
 }

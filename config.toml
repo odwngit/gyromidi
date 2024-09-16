@@ -1,8 +1,12 @@
 # starwheel configuration
 
 # Mode determines how inputs are mapped:
-# mouse|relative|threshold
-Mode = "threshold"
+# mouse|threshold
+Mode = "mouse"
+
+# Axis determines which gyroscopic axis the input is mapped to:
+# X|Y|Z
+Axis = "Y"
 
 # Sensitivity defines the multiplication of the gyroscope data for pixel mouse movement:
 Sensitivity = 8.0
