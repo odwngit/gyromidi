@@ -1,2 +1,4 @@
 github.com/BurntSushi/toml v1.4.0 h1:kuoIxZQy2WRRk1pttg9asf+WVv6tWQuBNVmK8+nqPr0=
 github.com/BurntSushi/toml v1.4.0/go.mod h1:ukJfTF/6rtPPRCnwkur4qwRxa8vTRFBF0uk2lLoLwho=
+gitlab.com/gomidi/midi/v2 v2.2.19 h1:/Ktpf21SIOX61gg8PJ7wYLSsD+dOU1e3z3tlO9OS+Zs=
+gitlab.com/gomidi/midi/v2 v2.2.19/go.mod h1:ENtYaJPOwb2N+y7ihv/L7R4GtWjbknouhIIkMrJ5C0g=
