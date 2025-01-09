@@ -1,6 +1,6 @@
 # gyromidi configuration
 
 # Midi CC numbers for each axis
-X = 30
-Y = 31
-Z = 32
+X = 20
+Y = 21
+Z = 22
