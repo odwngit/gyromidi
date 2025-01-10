@@ -1,3 +1,4 @@
 ssl/gyromidi.crt
 ssl/gyromidi.key
 ssl/gyromidi.csr
+ssl/ssl_generator.bat

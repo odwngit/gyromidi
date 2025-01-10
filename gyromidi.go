@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"runtime"
 
 	"github.com/BurntSushi/toml"
 	"gitlab.com/gomidi/midi/v2"
+	"gitlab.com/gomidi/midi/v2/drivers"
 	"gitlab.com/gomidi/midi/v2/drivers/rtmididrv"
 )
 
@@ -34,16 +36,29 @@ func main() {
 
 	var gyro GyroscopeData
 
-	// Get a new midi driver port
-	port, err := rtmididrv.New()
-	if err != nil {
-		panic(err)
-	}
+	var out drivers.Out
 
-	// Open the port as a virtual output
-	out, err := port.OpenVirtualOut("GyroMidi")
-	if err != nil {
-		panic(err)
+	switch runtime.GOOS {
+	case "darwin", "linux":
+		// Get a new midi driver
+		port, err := rtmididrv.New()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// Open the driver as a virtual output port
+		out, err = port.OpenVirtualOut("GyroMidi")
+		if err != nil {
+			log.Fatal(err)
+		}
+	case "windows":
+		out, err = drivers.OutByName("GyroMidi")
+		if err != nil {
+			log.Println("An error occurred. Have you set up loopMIDI correctly?")
+			log.Fatal(err)
+		}
+	default:
+		log.Fatal("Your platform is not supported.")
 	}
 
 	log.Printf("Opened virtual midi output %v...", out)
