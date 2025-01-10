@@ -34,7 +34,7 @@
 				angleAlpha = event.alpha;
 				angleBeta = event.beta;
 				angleGamma = event.gamma;
-				sendData(angleAlpha, angleBeta, angleGamma, "movement");
+				sendData(angleBeta, angleGamma, angleAlpha, "movement");
         	})
 
 			var polling_rate = 1000;
@@ -43,7 +43,7 @@
 			})
 
 			function pollByRate() {
-				sendData(angleAlpha, angleBeta, angleGamma, "polling")
+				sendData(angleBeta, angleGamma, angleAlpha, "polling")
 				window.setTimeout(f => {
 					pollByRate()
 				}, polling_rate)
@@ -73,8 +73,8 @@
   					body: JSON.stringify(
 						{
 							"AngleX": x,
-							"AngleY": y,
-							"AngleZ": z
+							"AngleY": y+180,
+							"AngleZ": (z*2)+180
 						}
 					),
   					headers: {
