@@ -19,9 +19,10 @@ type GyroscopeData struct {
 }
 
 type Config struct {
-	X int
-	Y int
-	Z int
+	X              int
+	Y              int
+	Z              int
+	VerboseLogging bool
 }
 
 func main() {
@@ -79,7 +80,9 @@ func main() {
 				panic(err)
 			}
 
-			log.Printf("Received gyroscope data: (X: %v, Y: %v, Z: %v)", gyro.AngleX, gyro.AngleY, gyro.AngleZ)
+			if cfg.VerboseLogging {
+				log.Printf("Received gyroscope data: (X: %v, Y: %v, Z: %v)", gyro.AngleX, gyro.AngleY, gyro.AngleZ)
+			}
 
 			var cc_x uint8 = uint8((127.0 / 360.0) * gyro.AngleX)
 			var cc_y uint8 = uint8((127.0 / 360.0) * gyro.AngleY)
