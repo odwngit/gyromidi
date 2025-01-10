@@ -72,9 +72,9 @@
   					method: "POST",
   					body: JSON.stringify(
 						{
-							"AngleX": x,
-							"AngleY": y+180,
-							"AngleZ": (z*2)+180
+							"AngleX": x+180,
+							"AngleY": (y*2)+180,
+							"AngleZ": z
 						}
 					),
   					headers: {
