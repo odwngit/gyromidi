@@ -1,10 +1,14 @@
 # gyromidi configuration
 
-# Midi CC numbers for each axis
+# Midi CC numbers for each motion data
+# XYZ = Rotation axis
+# A = Acceleration total
+
 # If any are set to 0, no midi data will be sent from that axis
 X = 20
 Y = 21
 Z = 22
+A = 23
 
 # Verbose logging setting, if true, gyroscope data will be printed to the console.
 VerboseLogging = false

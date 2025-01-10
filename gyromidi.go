@@ -13,15 +13,17 @@ import (
 )
 
 type GyroscopeData struct {
-	AngleX float64
-	AngleY float64
-	AngleZ float64
+	AngleX       float64
+	AngleY       float64
+	AngleZ       float64
+	Acceleration float64
 }
 
 type Config struct {
 	X              int
 	Y              int
 	Z              int
+	A              int
 	VerboseLogging bool
 }
 
@@ -81,12 +83,14 @@ func main() {
 			}
 
 			if cfg.VerboseLogging {
-				log.Printf("Received gyroscope data: (X: %v, Y: %v, Z: %v)", gyro.AngleX, gyro.AngleY, gyro.AngleZ)
+				log.Printf("Received motion data: (X: %v, Y: %v, Z: %v, Acc: %v)", gyro.AngleX, gyro.AngleY, gyro.AngleZ, gyro.Acceleration)
 			}
 
+			// This should definitely have some sanitisation at some point
 			var cc_x uint8 = uint8((127.0 / 360.0) * gyro.AngleX)
 			var cc_y uint8 = uint8((127.0 / 360.0) * gyro.AngleY)
 			var cc_z uint8 = uint8((127.0 / 360.0) * gyro.AngleZ)
+			var cc_a uint8 = uint8(gyro.Acceleration)
 
 			p := uint8(out.Number())
 
@@ -98,6 +102,9 @@ func main() {
 			}
 			if cfg.Z != 0 {
 				out.Send(midi.ControlChange(p, uint8(cfg.Z), cc_z))
+			}
+			if cfg.A != 0 {
+				out.Send(midi.ControlChange(p, uint8(cfg.A), cc_a))
 			}
 		}
 

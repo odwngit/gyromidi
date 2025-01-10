@@ -25,32 +25,42 @@
 		<hr>
 		
 		<script>
-			// Active angle variables
+			// Active gyro variables
 			var angleAlpha = 0;
 			var angleBeta = 0;
 			var angleGamma = 0;
+			var currentAcceleration = {};
+
+			var pollingLoopStarted = false;
 
         	window.addEventListener("deviceorientation", (event) => {
 				angleAlpha = event.alpha;
 				angleBeta = event.beta;
 				angleGamma = event.gamma;
-				sendData(angleBeta, angleGamma, angleAlpha, "movement");
-        	})
+				sendData(angleBeta, angleGamma, angleAlpha, currentAcceleration, "movement");
+        	});
+
+			window.addEventListener("devicemotion", (event) => {
+				currentAcceleration = event.acceleration;
+			})
 
 			var polling_rate = 1000;
 			document.getElementById("polling_rate").addEventListener("change", (event) => {
+				if (!pollingLoopStarted) {
+					pollingLoopStarted = true;
+					pollByRate();
+				}
 				polling_rate = parseFloat(event.target.value);
 			})
 
 			function pollByRate() {
-				sendData(angleBeta, angleGamma, angleAlpha, "polling")
-				window.setTimeout(f => {
+				sendData(angleBeta, angleGamma, angleAlpha, currentAcceleration, "polling")
+				window.setTimeout(() => {
 					pollByRate()
 				}, polling_rate)
 			}
-			pollByRate();
 			
-			function sendData(x, y, z, source) {
+			function sendData(x, y, z, a, source) {
 				if (!document.getElementById("polling").checked) {
 					return;
 				}
@@ -74,7 +84,8 @@
 						{
 							"AngleX": x+180,
 							"AngleY": (y*2)+180,
-							"AngleZ": z
+							"AngleZ": z,
+							"Acceleration": Math.abs(a.x)+Math.abs(a.y)+Math.abs(a.z)
 						}
 					),
   					headers: {
