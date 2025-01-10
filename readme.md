@@ -2,11 +2,23 @@
 A server that turns your gyroscope-having mobile device into a mappable midi controller.
 
 # Setup
-- Install OpenSSL, and the golang cli for the computer which you will run the server on.
-- Download the latest release from the github releases page.
-- Open the source folder in your terminal.
-- `cd ssl && ./ssl_generator.ssh` (this may look a little different depending on your platform, just run the `ssl_generator.sh` script).
-- `cd .. && go run .`.
-- This has now started the server on the computer that you want to use the MIDI on.
-- Now, go to the url printed out in the console on your mobile device, enter your polling rate (sensible is around ~30hz) and click start polling.
-- It is now running as a virtual midi device on your computer.
+
+# Windows
+- Install the [Chocolatey Package Manager](https://chocolatey.org/)
+- Install [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html)
+- Run `choco install openssl && choco install go` in an elevated powershell.
+- Open loopMIDI and create a new port with the exact name "GyroMidi" (without quotes).
+- Run `run_windows.bat` (you will run this any time you want to run GyroMidi).
+
+# Unix (Mac/Linux)
+- Install OpenSSL and Golang with your package manager of choice. (likely [Homebrew](https://brew.sh) for Mac)
+- Run `run_unix.sh` (you will run this any time you want to run GyroMidi).
+
+---
+
+After running the server:
+- Go to the URL printed in the console, on your gyroscopic mobile device.
+- Polling mode "Polling Rate" will send gyroscope data every `x` milliseconds where `x` is the number entered in Polling Rate.
+- Polling mode "On Movement" will send gyroscope data whenever the browser gets the data, (as fast as possible).
+- Then turn on Polling, go to your DAW of choice, and GyroMidi will be a MIDI source.
+- The Gyroscope X, Y, and Z axis will be changing the MIDI CC values set in `config.toml`.
