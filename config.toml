@@ -1,6 +1,7 @@
 # gyromidi configuration
 
 # Midi CC numbers for each axis
+# If any are set to 0, no midi data will be sent from that axis
 X = 20
 Y = 21
 Z = 22

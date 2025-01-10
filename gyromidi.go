@@ -71,9 +71,16 @@ func main() {
 			var cc_z uint8 = uint8((127.0 / 360.0) * gyro.AngleZ)
 
 			p := uint8(out.Number())
-			out.Send(midi.ControlChange(p, uint8(cfg.X), cc_x))
-			out.Send(midi.ControlChange(p, uint8(cfg.Y), cc_y))
-			out.Send(midi.ControlChange(p, uint8(cfg.Z), cc_z))
+
+			if cfg.X != 0 {
+				out.Send(midi.ControlChange(p, uint8(cfg.X), cc_x))
+			}
+			if cfg.Y != 0 {
+				out.Send(midi.ControlChange(p, uint8(cfg.Y), cc_y))
+			}
+			if cfg.Z != 0 {
+				out.Send(midi.ControlChange(p, uint8(cfg.Z), cc_z))
+			}
 		}
 
 	}
