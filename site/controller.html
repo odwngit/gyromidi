@@ -10,60 +10,64 @@
 	</head>
 	<body>
 		<h1>gyromidi controller</h1>
+		<button onclick="requestGyro()" id="requestButton">Request Gyroscope Permissions</button>
 		<hr>
-		<span>Enter polling rate (hz):</span>
-		<input type="number" id="polling_rate"></input>
+		<span>Polling rate (ms between each poll):</span>
+		<input type="number" id="polling_rate" value="1000"></input>
 		<hr>
-		<button onclick="startPolling()">Start Polling</button>
-		<button onclick="stopPolling()">Stop Polling</button>
+		<input type="checkbox" id="polling">Polling</input>
+		<hr>
+		<label for="polling_mode">Polling Mode</label>
+		<select id="polling_mode" name="polling_mode">
+			<option value="on_move">On Movement</option>
+			<option value="rate">Polling Rate</option>
+		</select>
 		<hr>
 		
 		<script>
-			var curAngleAlpha = 0;
-			var curAngleBeta = 0;
-			var curAngleGamma = 0;
+			// Active angle variables
+			var angleAlpha = 0;
+			var angleBeta = 0;
+			var angleGamma = 0;
 
-			var polling = false;
-			var requestedGyro = false;
+        	window.addEventListener("deviceorientation", (event) => {
+				angleAlpha = event.alpha;
+				angleBeta = event.beta;
+				angleGamma = event.gamma;
+				sendData(angleAlpha, angleBeta, angleGamma, "movement");
+        	})
 
-			async function startPolling() {
-				if (!requestedGyro) {
-					requestedGyro = true;
-					if (typeof DeviceMotionEvent.requestPermission === 'function') {
-        					await DeviceMotionEvent.requestPermission()
-        					.catch((err) => {
-							alert(`Error getting sensor permission: ${err}`);
-            						return;
-        					})
-    					}
-                			window.addEventListener("deviceorientation", (event) => {
-						curAngleAlpha = event.alpha;
-						curAngleBeta = event.beta;
-						curAngleGamma = event.gamma;
-                			})
-				}
-				polling = true;
-				doPoll();
-			}
-
-			function stopPolling() {
-				polling = false;
-			}
-			
-			var polling_rate_hz = 1;
-
+			var polling_rate = 1000;
 			document.getElementById("polling_rate").addEventListener("change", (event) => {
-				polling_rate_hz = parseFloat(event.target.value);
-			});
+				polling_rate = parseFloat(event.target.value);
+			})
 
-			function doPoll() {
-				sendRequest(curAngleAlpha, curAngleBeta, curAngleGamma);
-				if (polling) {
-					setTimeout(doPoll, (1/polling_rate_hz)*1000)
-				}
+			function pollByRate() {
+				sendData(angleAlpha, angleBeta, angleGamma, "polling")
+				window.setTimeout(f => {
+					pollByRate()
+				}, polling_rate)
 			}
+			pollByRate();
 			
-			function sendRequest(x, y, z) {
+			function sendData(x, y, z, source) {
+				if (!document.getElementById("polling").checked) {
+					return;
+				}
+
+				let polling_mode = document.getElementById("polling_mode").value;
+				if (source == "movement") {
+					if (polling_mode != "on_move") {
+						return;
+					}
+				} else if (source == "polling") {
+					if (polling_mode != "rate") {
+						return;
+					}
+				} else {
+					return;
+				}
+
 				fetch(window.location.origin + "/action", {
   					method: "POST",
   					body: JSON.stringify(
@@ -77,6 +81,19 @@
 						"Content-type": "application/json; charset=UTF-8"
   					}
 				});
+			}
+
+			async function requestGyro() {
+				if (typeof DeviceMotionEvent.requestPermission === 'function') {
+					await DeviceMotionEvent.requestPermission()
+					.catch((err) => {
+						alert(`Error getting sensor permission: ${err}`);
+						return;
+					})
+				} else {
+					alert("There was a problem getting sensor permissions.");
+				}
+				document.getElementById("requestButton").remove();
 			}
 		</script>
 	</body>
