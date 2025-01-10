@@ -2,7 +2,7 @@
 A server that turns your gyroscope-having mobile device into a mappable midi controller.
 
 # Setup
-
+Download the latest source code zip file from the [Releases](https://github.com/odwngit/gyromidi/releases) page, and unzip it.
 # Windows
 - Install the [Chocolatey Package Manager](https://chocolatey.org/)
 - Install [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html)
