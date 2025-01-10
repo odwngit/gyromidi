@@ -21,4 +21,4 @@ After running the server:
 - Polling mode "Polling Rate" will send gyroscope data every `x` milliseconds where `x` is the number entered in Polling Rate.
 - Polling mode "On Movement" will send gyroscope data whenever the browser gets the data, (as fast as possible).
 - Then turn on Polling, go to your DAW of choice, and GyroMidi will be a MIDI source.
-- The Gyroscope X, Y, and Z axis will be changing the MIDI CC values set in `config.toml`.
+- The Gyroscope X, Y, and Z axis, (along with acceleration) will be changing the MIDI CC values set in `config.toml`.
